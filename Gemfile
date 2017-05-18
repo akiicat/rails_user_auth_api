@@ -31,6 +31,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'bcrypt', '~> 3.1.7'
 gem 'devise'
 gem 'jwt'
+gem 'active_model_serializers', '~> 0.10.6'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
