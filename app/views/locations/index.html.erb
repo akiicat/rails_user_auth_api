@@ -1,7 +1,14 @@
 <div id="locations">
   <login v-if="token == null"></login>
-  <div v-else>Logged In</div>
+  <temperature v-else>Logged In</temperature>
 </div>
+
+<script type="text/x-template" id="temperature-template">
+  <div>
+    <h1>{{ temp }}</h1>
+    <p>{{ location }}</p>
+  </div>
+</script>
 
 <script type="text/x-template" id="login-template">
   <form>
@@ -15,12 +22,35 @@
 var state = {
   token: localStorage.getItem("token")
 }
+
+Vue.component("temperature", {
+  template: "#temperature-template",
+  data: function() {
+    return {
+      temp: null,
+      location: null
+    }
+  },
+  created: function() {
+    this.fetchData()
+  },
+  methods: {
+    fetchData: function() {
+      Vue.http.headers.common['Authorization'] = "Bearer " + state.token
+      this.$http.get("/api/v1/locations/1").then(response => {
+        this.temp = response.body.data.attributes.current.temp
+        this.location = response.body.data.attributes.name
+      })
+    }
+  }
+})
+
 Vue.component("login", {
   template: "#login-template",
   data: function() {
     return {
-      email: "example@mail.com",
-      password: "123123123"
+      email: "",
+      password: ""
     }
   },
   methods: {
