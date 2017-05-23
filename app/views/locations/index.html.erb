@@ -1,0 +1,41 @@
+<div id="locations">
+  <login v-if="token == null"></login>
+  <div v-else>Logged In</div>
+</div>
+
+<script type="text/x-template" id="login-template">
+  <form>
+    <input v-model="email" placeholder="Email">
+    <input v-model="password" type="password" placeholder="Password">
+    <button v-on:click="submit">Login</button>
+  </form>
+</script>
+
+<script>
+var state = {
+  token: localStorage.getItem("token")
+}
+Vue.component("login", {
+  template: "#login-template",
+  data: function() {
+    return {
+      email: "example@mail.com",
+      password: "123123123"
+    }
+  },
+  methods: {
+    submit: function(event) {
+      event.preventDefault()
+      this.$http.post("/api/v1/auth", { auth: { email: this.email, password: this.password }}).then(response => {
+        localStorage.setItem("token", response.body.token)
+        state.token = response.body.token
+      })
+    }
+  }
+})
+
+new Vue({
+  el: "#locations",
+  data: state
+})
+</script>
